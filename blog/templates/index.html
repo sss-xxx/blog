@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}首页 - 简易博客{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">最新文章</h1>
+        
+        {% if posts %}
+            {% for post in posts %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text text-muted">
+                        <small>作者: {{ post.author }} | 发布时间: {{ post.date }}</small>
+                    </p>
+                    <p class="card-text">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+                    <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-primary">阅读全文</a>
+                    
+                    {% if session.username == post.author %}
+                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-secondary">编辑</a>
+                    <a href="{{ url_for('delete_post', post_id=post.id) }}" class="btn btn-danger" onclick="return confirm('确定要删除这篇文章吗？');">删除</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                目前还没有文章。{% if session.username %}<a href="{{ url_for('new_post') }}">写一篇吧！</a>{% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
